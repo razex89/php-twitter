@@ -39,7 +39,7 @@ if (!isset($_SESSION["username"])) {
         if ($data->num_rows > 0) {
             // output data of each row
             while($row = $data->fetch_assoc()) {
-                echo "id: " . $row["id"]. " - Name: " . $row["username"]. ", Message:" . $row["message"]. "<br>";
+                echo "id: " . $row["id"]. " - Name: " . $row["username"]. ", Message:" . htmlspecialchars($row["message"]). "<br>";
             }
         } else {
             echo "0 results";

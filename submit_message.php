@@ -10,9 +10,7 @@ if (!isset($_SESSION["username"])) {
 
 
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
+include 'config.php';
 
 if (!isset($_SESSION["username"])) {
     echo "could not insert message, please log in first, go to http://localhost/php-learn/login.php";
@@ -31,14 +29,14 @@ $message = $_POST["message"];
 
 // Create connection
 $conn = new mysqli($servername, $username, $password);
-$data = $conn->query("select * from twitter.messages");
 
-$sql = "INSERT INTO twitter.messages (username, message) VALUES ('%s', '%s')";
+$stmt = $conn->prepare("INSERT INTO twitter.messages (username, message) VALUES (?, ?)");
+$stmt->bind_param("ss", $name, $message);
 
-if ($conn->query(sprintf($sql, $name, $message)) === TRUE) {
+if ($stmt->execute() === TRUE) {
     echo "New record created successfully";
 } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
+    echo "NOPE";
 }
 
 ?>

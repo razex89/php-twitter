@@ -21,17 +21,23 @@ $stmt->bind_param("s", $twitter_username);
 
 $stmt->execute();
 
-$result = $stmt->get_result();
+if ($stmt->get_result()->num_rows == 1) {
+    echo "user already exists";
+    die;
+}
 
-if ($result->num_rows == 1) {
-    $sql_data = $result->fetch_assoc();
-    if (password_verify($twitter_password, $sql_data['password']))
-    $_SESSION["username"] = $twitter_username;
-    echo "success!";
+$conn = new mysqli($servername, $username, $password);
+$stmt = $conn->prepare("INSERT INTO twitter.users (username, password) VALUES (?, ?)");
+$password_hash = password_hash($twitter_password, PASSWORD_DEFAULT);
+$stmt->bind_param("ss", $twitter_username, $password_hash);
+
+if ($stmt->execute() === TRUE) {
+    echo "password created successfully.";
+} else {
+    echo "NOPE";
 }
-else {
-    echo "user or password incorrect";
-}
+
+
 ?>
 </body>
 </html>
